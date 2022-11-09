@@ -150,10 +150,14 @@ class App:
         recommendations.place(x=330, y=280, width=161, height=129)
 
     def search_button_command(self):
-        print(self.search_entry.get())
-        book = self.search_entry.get()
+        book = self.search_entry.get().strip().lower()
         book_info = bs.search_book(book)
-        self.search_results["text"] = book_info
+        if book_info is None:
+            self.search_results["text"] = "Book not found"
+        else:
+            self.search_results["text"] = "Book ID: " + str(book_info[0]) + "\nTitle: " + \
+                book_info[2] + "\nGenre: " + \
+                book_info[1] + "\nAuthor: " + book_info[3]
 
     def GButton_819_command(self):
         print("command")
