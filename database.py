@@ -40,30 +40,53 @@ def book_availability(book_id):
     # if current date is greater than return date and reservation date, book is available
     with db:
         cursor.execute(
-            "SELECT * FROM Reservations WHERE BookID = ? AND ? <= CO_Date AND Res_Date = ?", (book_id, current_date, "null"))
+            "SELECT * FROM Reservations WHERE BookID = ? AND Return_Date = ? AND Res_Date = ?", (book_id, "null", "null"))
         result = cursor.fetchall()
-        print(result)
         if len(result) == 0:
             return True
         else:
             return False
 
 
+def check_bookID(book_id):
+    db = sqlite3.connect('Library.db')
+    cursor = db.cursor()
+
+    with db:
+        cursor.execute(
+            "SELECT * FROM Books WHERE BookID = ?", (book_id,))
+        result = cursor.fetchall()
+        if len(result) == 0:
+            return False
+        else:
+            return True
+
+
 def checkout_book(book_id, member_id):
     db = sqlite3.connect('Library.db')
     cursor = db.cursor()
     co_date = datetime.now().strftime("%Y-%m-%d")
-    return_date = (datetime.now() + relativedelta(months=+1)
-                   ).strftime("%Y-%m-%d")
 
     with db:
         cursor.execute("INSERT INTO Reservations (BookID, Res_Date, CO_Date, Return_Date, Member_ID) VALUES (?,?,?,?,?)",
-                       (book_id, "null", co_date, return_date, member_id))
+                       (book_id, "null", co_date, "null", member_id))
     db.commit()
     db.close()
 
 
+def return_book(book_id):
+    db = sqlite3.connect('Library.db')
+    cursor = db.cursor()
+    return_date = datetime.now().strftime("%Y-%m-%d")
+    with db:
+        cursor.execute(
+            "UPDATE Reservations SET Return_Date = ? WHERE BookID = ? AND Return_Date = ?", (return_date, book_id, "null"))
+    db.commit()
+    db.close()
+
 # helper function so I can see the current state of the database
+
+
 def view_table(table_name):
     db = sqlite3.connect('Library.db')
     cursor = db.cursor()
@@ -72,6 +95,17 @@ def view_table(table_name):
         cursor.execute("SELECT * FROM " + table_name)
         for row in cursor:
             print(row)
+    db.commit()
+    db.close()
+
+
+def delete_record(reservation_id):
+    db = sqlite3.connect('Library.db')
+    cursor = db.cursor()
+
+    with db:
+        cursor.execute(
+            "DELETE FROM Reservations WHERE ReservationID = ?", (reservation_id,))
     db.commit()
     db.close()
 

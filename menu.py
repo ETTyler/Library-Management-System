@@ -1,6 +1,8 @@
 import tkinter as tk
 import tkinter.font as tkFont
 import bookSearch as bs
+import bookCheckout as bc
+import bookReturn as br
 
 
 class App:
@@ -58,13 +60,13 @@ class App:
         checkout_label["text"] = "Checkout Book"
         checkout_label.place(x=40, y=30, width=171, height=33)
 
-        memberID_entry = tk.Entry(root)
-        memberID_entry["borderwidth"] = "1px"
-        memberID_entry["font"] = label_font
-        memberID_entry["fg"] = "#333333"
-        memberID_entry["justify"] = "center"
-        memberID_entry["text"] = "MemberID"
-        memberID_entry.place(x=30, y=110, width=90, height=30)
+        self.memberID_entry = tk.Entry(root)
+        self.memberID_entry["borderwidth"] = "1px"
+        self.memberID_entry["font"] = label_font
+        self.memberID_entry["fg"] = "#333333"
+        self.memberID_entry["justify"] = "center"
+        self.memberID_entry["text"] = "MemberID"
+        self.memberID_entry.place(x=30, y=110, width=90, height=30)
 
         member_label = tk.Label(root)
         member_label["font"] = label_font
@@ -77,16 +79,16 @@ class App:
         book_label["font"] = label_font
         book_label["fg"] = "#333333"
         book_label["justify"] = "center"
-        book_label["text"] = "Book ID"
+        book_label["text"] = "Book ID:"
         book_label.place(x=150, y=80, width=70, height=25)
 
-        book_entry = tk.Entry(root)
-        book_entry["borderwidth"] = "1px"
-        book_entry["font"] = label_font
-        book_entry["fg"] = "#333333"
-        book_entry["justify"] = "center"
-        book_entry["text"] = "Book ID"
-        book_entry.place(x=140, y=110, width=90, height=30)
+        self.book_entry = tk.Entry(root)
+        self.book_entry["borderwidth"] = "1px"
+        self.book_entry["font"] = label_font
+        self.book_entry["fg"] = "#333333"
+        self.book_entry["justify"] = "center"
+        self.book_entry["text"] = "Book ID"
+        self.book_entry.place(x=140, y=110, width=90, height=30)
 
         checkout_button = tk.Button(root)
         checkout_button["bg"] = "#f0f0f0"
@@ -95,7 +97,7 @@ class App:
         checkout_button["justify"] = "center"
         checkout_button["text"] = "Checkout"
         checkout_button.place(x=80, y=170, width=91, height=33)
-        checkout_button["command"] = self.GButton_819_command
+        checkout_button["command"] = self.checkout_button_command
 
         returnH_label = tk.Label(root)
         returnH_label["font"] = heading_font
@@ -104,19 +106,19 @@ class App:
         returnH_label["text"] = "Return Book"
         returnH_label.place(x=40, y=240, width=172, height=48)
 
-        return_label = tk.Entry(root)
-        return_label["borderwidth"] = "1px"
-        return_label["font"] = label_font
-        return_label["fg"] = "#333333"
-        return_label["justify"] = "center"
-        return_label["text"] = "Book ID"
-        return_label.place(x=80, y=320, width=90, height=30)
+        self.return_entry = tk.Entry(root)
+        self.return_entry["borderwidth"] = "1px"
+        self.return_entry["font"] = label_font
+        self.return_entry["fg"] = "#333333"
+        self.return_entry["justify"] = "center"
+        self.return_entry["text"] = "Book ID:"
+        self.return_entry.place(x=80, y=320, width=90, height=30)
 
         bookID_label = tk.Label(root)
         bookID_label["font"] = label_font
         bookID_label["fg"] = "#333333"
         bookID_label["justify"] = "center"
-        bookID_label["text"] = "Book ID"
+        bookID_label["text"] = "Book ID:"
         bookID_label.place(x=90, y=290, width=72, height=30)
 
         return_button = tk.Button(root)
@@ -126,7 +128,7 @@ class App:
         return_button["justify"] = "center"
         return_button["text"] = "Return"
         return_button.place(x=80, y=370, width=91, height=33)
-        return_button["command"] = self.GButton_154_command
+        return_button["command"] = self.return_button_command
 
         searchHeading = tk.Label(root)
         searchHeading["font"] = heading_font
@@ -159,11 +161,21 @@ class App:
                 book_info[2] + "\nGenre: " + \
                 book_info[1] + "\nAuthor: " + book_info[3]
 
-    def GButton_819_command(self):
-        print("command")
+    def checkout_button_command(self):
+        member_id = self.memberID_entry.get()
+        book_id = self.book_entry.get()
+        print(member_id, book_id)
+        try:
+            print(bc.book_checkout(book_id, member_id))
+        except:
+            print("invalid input")
 
-    def GButton_154_command(self):
-        print("command")
+    def return_button_command(self):
+        book_id = self.return_entry.get()
+        try:
+            print(br.return_book(book_id))
+        except:
+            print("error")
 
 
 if __name__ == "__main__":
