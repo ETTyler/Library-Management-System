@@ -32,6 +32,19 @@ def initiate_db():
     db.close()
 
 
+def book_exists(book_id):
+    db = sqlite3.connect('Library.db')
+    cursor = db.cursor()
+
+    with db:
+        cursor.execute("SELECT * FROM Books WHERE BookID = ?", (book_id,))
+        result = cursor.fetchall()
+        if len(result) == 0:
+            return False
+        else:
+            return True
+
+
 def book_availability(book_id):
     db = sqlite3.connect('Library.db')
     cursor = db.cursor()

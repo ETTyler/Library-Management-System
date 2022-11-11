@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox
 import tkinter.font as tkFont
 import bookSearch as bs
 import bookCheckout as bc
@@ -164,18 +165,25 @@ class App:
     def checkout_button_command(self):
         member_id = self.memberID_entry.get()
         book_id = self.book_entry.get()
-        print(member_id, book_id)
-        try:
-            print(bc.book_checkout(book_id, member_id))
-        except:
-            print("invalid input")
+        result = bc.book_checkout(book_id, member_id)
+        if result == True:
+            tk.messagebox.showinfo("Success", "Book checked out")
+        elif result == "Book not found":
+            tk.messagebox.showinfo("Error", result)
+        elif result == "Invalid member ID":
+            tk.messagebox.showinfo("Error", result)
+        elif result == "Book is not available":
+            tk.messagebox.showinfo("Error", result)
 
     def return_button_command(self):
         book_id = self.return_entry.get()
-        try:
-            print(br.return_book(book_id))
-        except:
-            print("error")
+        result = br.return_book(book_id)
+        if result == True:
+            tk.messagebox.showinfo("Success", "Book returned")
+        elif result == "Book has not been checked out":
+            tk.messagebox.showinfo("Error", result)
+        elif result == "Invalid book ID":
+            tk.messagebox.showinfo("Error", result)
 
 
 if __name__ == "__main__":
