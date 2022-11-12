@@ -4,6 +4,7 @@ import tkinter.font as tkFont
 import bookSearch as bs
 import bookCheckout as bc
 import bookReturn as br
+import database as db
 
 
 class App:
@@ -35,14 +36,12 @@ class App:
         self.search_entry["font"] = label_font
         self.search_entry["fg"] = "#333333"
         self.search_entry["justify"] = "center"
-        self.search_entry["text"] = ""
         self.search_entry.place(x=330, y=100, width=116, height=30)
 
         self.search_results = tk.Message(root)
         self.search_results["font"] = label_font
         self.search_results["fg"] = "#333333"
         self.search_results["justify"] = "center"
-        self.search_results["text"] = "example text"
         self.search_results.place(x=330, y=140, width=160, height=90)
 
         search_button = tk.Button(root)
@@ -143,14 +142,14 @@ class App:
         recom_label["fg"] = "#333333"
         recom_label["justify"] = "center"
         recom_label["text"] = "Recommendations"
-        recom_label.place(x=320, y=240, width=178, height=43)
+        recom_label.place(x=320, y=240, width=200, height=45)
 
         recommendations = tk.Message(root)
         recommendations["font"] = label_font
         recommendations["fg"] = "#333333"
         recommendations["justify"] = "center"
         recommendations["text"] = "recommendations"
-        recommendations.place(x=330, y=280, width=161, height=129)
+        recommendations.place(x=330, y=280, width=200, height=130)
 
     def search_button_command(self):
         book = self.search_entry.get().strip().lower()
@@ -173,7 +172,14 @@ class App:
         elif result == "Invalid member ID":
             tk.messagebox.showinfo("Error", result)
         elif result == "Book is not available":
-            tk.messagebox.showinfo("Error", result)
+            reserve = tk.messagebox.askyesno(
+                "Question", result+".\nWould you like to reserve the book?")
+            if reserve:
+                status = db.reserve_book(book_id, member_id)
+                if status:
+                    tk.messagebox.showinfo("Success", "Book reserved")
+                else:
+                    tk.messagebox.showinfo("Error", "Book already reserved")
 
     def return_button_command(self):
         book_id = self.return_entry.get()

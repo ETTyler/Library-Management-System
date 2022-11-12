@@ -48,12 +48,24 @@ def book_exists(book_id):
 def book_availability(book_id):
     db = sqlite3.connect('Library.db')
     cursor = db.cursor()
-    current_date = datetime.now().strftime("%Y-%m-%d")
 
-    # if current date is greater than return date and reservation date, book is available
     with db:
         cursor.execute(
             "SELECT * FROM Reservations WHERE BookID = ? AND Return_Date = ? AND Res_Date = ?", (book_id, "null", "null"))
+        result = cursor.fetchall()
+        if len(result) == 0:
+            return True
+        else:
+            return False
+
+
+def book_reserved(book_id):
+    db = sqlite3.connect('Library.db')
+    cursor = db.cursor()
+
+    with db:
+        cursor.execute(
+            "SELECT * FROM Reservations WHERE BookID = ? AND CO_Date = ? AND Return_Date = ?", (book_id, "null", "null"))
         result = cursor.fetchall()
         if len(result) == 0:
             return True
@@ -126,10 +138,14 @@ def delete_record(reservation_id):
 def reserve_book(book_id, member_id):
     db = sqlite3.connect('Library.db')
     cursor = db.cursor()
-    res_date = datetime.now().strftime("%Y-%m-%d")
-
-    with db:
-        cursor.execute("INSERT INTO Reservations (BookID, Res_Date, Member_ID) VALUES (?,?,?)",
-                       (book_id, res_date, member_id))
+    available = book_reserved(book_id)
+    if available:
+        res_date = datetime.now().strftime("%Y-%m-%d")
+        with db:
+            cursor.execute("INSERT INTO Reservations (BookID, Res_Date, CO_Date, Return_Date, Member_ID) VALUES (?,?,?,?,?)",
+                           (book_id, res_date, "null", "null", member_id))
+    else:
+        return False
     db.commit()
     db.close()
+    return True
