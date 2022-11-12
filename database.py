@@ -149,3 +149,30 @@ def reserve_book(book_id, member_id):
     db.commit()
     db.close()
     return True
+
+
+def popular_books():
+    db = sqlite3.connect('Library.db')
+    cursor = db.cursor()
+
+    with db:
+        cursor.execute(
+            "SELECT Reservations.BookID, COUNT(Reservations.BookID), Books.Title, Books.Author, Books.Genre FROM Reservations INNER JOIN Books ON Reservations.BookID = Books.BookID GROUP BY Reservations.BookID ORDER BY COUNT(Reservations.BookID) DESC")
+        return cursor.fetchall()
+
+
+def book_info(book_id):
+    db = sqlite3.connect('Library.db')
+    cursor = db.cursor()
+
+    with db:
+        cursor.execute("SELECT * FROM Books WHERE BookID = ?", (book_id,))
+        return cursor.fetchall()
+
+
+def search_book(book_title):
+    db = sqlite3.connect('Library.db')
+    cursor = db.cursor()
+    res = cursor.execute(
+        "SELECT * FROM Books WHERE LOWER(Title) = ?", (book_title,))
+    return res.fetchall()

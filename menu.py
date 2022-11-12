@@ -144,12 +144,14 @@ class App:
         recom_label["text"] = "Recommendations"
         recom_label.place(x=320, y=240, width=200, height=45)
 
-        recommendations = tk.Message(root)
+        recommendations = tk.Button(root)
+        recommendations["bg"] = "#f0f0f0"
         recommendations["font"] = label_font
-        recommendations["fg"] = "#333333"
+        recommendations["fg"] = "#000000"
         recommendations["justify"] = "center"
-        recommendations["text"] = "recommendations"
-        recommendations.place(x=330, y=280, width=200, height=130)
+        recommendations["text"] = "View Recommendations"
+        recommendations.place(x=320, y=300, width=200, height=33)
+        recommendations["command"] = self.recommendations_button_command
 
     def search_button_command(self):
         book = self.search_entry.get().strip().lower()
@@ -190,6 +192,20 @@ class App:
             tk.messagebox.showinfo("Error", result)
         elif result == "Invalid book ID":
             tk.messagebox.showinfo("Error", result)
+
+    def recommendations_button_command(self):
+        new_window = tk.Toplevel(root)
+        new_window.title("Recommendations")
+        width = 900
+        height = 470
+        screenwidth = root.winfo_screenwidth()
+        screenheight = root.winfo_screenheight()
+        alignstr = '%dx%d+%d+%d' % (width, height,
+                                    (screenwidth - width) / 2, (screenheight - height) / 2)
+        new_window.geometry(alignstr)
+        new_window.mainloop()
+
+        return
 
 
 if __name__ == "__main__":

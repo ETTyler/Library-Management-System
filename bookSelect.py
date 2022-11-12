@@ -1,8 +1,9 @@
-import sqlite3
+import database as db
 
-db = sqlite3.connect('Library.db')
-cursor = db.cursor()
 
-res = cursor.execute("SELECT * FROM Books")
-for row in res:
-    print(row)
+def select_books(num_books):
+    book_list = db.popular_books()
+    return book_list[:num_books]
+
+
+print(select_books(3))
