@@ -174,13 +174,18 @@ class App:
         '''Checks out a book for a member with an option to reserve if unavailable and not already reserved'''
         member_id = self.memberID_entry.get()
         book_id = self.book_entry.get()
+        if member_id == "" or book_id == "":
+            tk.messagebox.showerror("Error", "Invalid Input")
+            return
         result = bc.book_checkout(book_id, member_id)
         if result == True:
             tk.messagebox.showinfo("Success", "Book checked out")
+        elif result == "Invalid book ID":
+            tk.messagebox.showerror("Error", result)
         elif result == "Book not found":
-            tk.messagebox.showinfo("Error", result)
+            tk.messagebox.showerror("Error", result)
         elif result == "Invalid member ID":
-            tk.messagebox.showinfo("Error", result)
+            tk.messagebox.showerror("Error", result)
         elif result == "Book is not available":
             reserve = tk.messagebox.askyesno(
                 "Question", result+".\nWould you like to reserve the book?")
@@ -198,9 +203,9 @@ class App:
         if result == True:
             tk.messagebox.showinfo("Success", "Book returned")
         elif result == "Book has not been checked out":
-            tk.messagebox.showinfo("Error", result)
+            tk.messagebox.showerror("Error", result)
         elif result == "Invalid book ID":
-            tk.messagebox.showinfo("Error", result)
+            tk.messagebox.showerror("Error", result)
 
     def recommendations_button_command(self):
         '''Opens a new window with the graphs to show the most popular books and genres'''

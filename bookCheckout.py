@@ -11,15 +11,17 @@ def id_validation(member_id):
 
 def book_checkout(book_id, member_id):
     '''Checks if the book is available and if the member ID is valid. If both are true, the book is checked out'''
+    if not book_id.isdigit():
+        return 'Invalid book ID'
     book_exists = db.book_exists(int(book_id))
     available = db.book_availability(book_id)
     valid_ID = id_validation(str(member_id))
-    if not available:
-        return "Book is not available"
+    if not valid_ID:
+        return "Invalid member ID"
     elif not book_exists:
         return "Book not found"
-    elif not valid_ID:
-        return "Invalid member ID"
+    elif not available:
+        return "Book is not available"
     else:
         db.checkout_book(book_id, member_id)
         return True

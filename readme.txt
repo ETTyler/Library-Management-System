@@ -1,3 +1,6 @@
+Book Search
+- Works with both book name or book ID
+
 Data Generation
 - In the file dataGenerator.py I wrote a few functions to generate example books and reservations.
 - The data for the books was produced using Googles book API through random ISBN numbers .
