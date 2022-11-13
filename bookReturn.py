@@ -12,3 +12,10 @@ def return_book(book_id):
     else:
         db.return_book(book_id)
         return True
+
+
+if __name__ == '__main__':
+    # Testing
+    print(return_book('1'))
+    print(return_book('343'))
+    print(return_book('sdfds'))

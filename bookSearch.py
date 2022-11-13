@@ -10,3 +10,11 @@ def book_search(book):
             return False
     else:
         return db.search_book(book)
+
+
+if __name__ == '__main__':
+    # Testing
+    print(book_search('1'))
+    print(book_search('400'))
+    print(book_search('The Great Gatsby'))
+    print(book_search('wombat retro'))
