@@ -1,9 +1,15 @@
 import tkinter as tk
-import tkinter.messagebox
 import tkinter.font as tkFont
-import bookSearch as bs
+import tkinter.messagebox
+
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+
 import bookCheckout as bc
 import bookReturn as br
+import bookSearch as bs
+import bookSelect as bsl
 import database as db
 
 
@@ -203,6 +209,26 @@ class App:
         alignstr = '%dx%d+%d+%d' % (width, height,
                                     (screenwidth - width) / 2, (screenheight - height) / 2)
         new_window.geometry(alignstr)
+
+        # add genre graph
+        fig = plt.figure(figsize=(6, 4))
+        ax = fig.add_subplot(111)
+        books = bsl.select_books(10)
+        titles = []
+        reservations = []
+
+        # ideally this would show the titles of the books but because of the dataset I created a lot of the titles are
+        # too long or use special characters that are not supported by tkinter so I had to just use the book id
+        for book in books:
+            titles.append(str(book[0]))
+            reservations.append(book[1])
+        plt.xlabel("Book ID")
+        plt.ylabel("Reservations")
+        ax.bar(titles, reservations)
+
+        canvas = FigureCanvasTkAgg(fig, master=new_window)
+        canvas.draw()
+        canvas.get_tk_widget().grid(column=2, row=0)
         new_window.mainloop()
 
         return
