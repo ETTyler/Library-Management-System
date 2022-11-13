@@ -1,13 +1,12 @@
-import sqlite3
-
-db = sqlite3.connect('Library.db')
-cursor = db.cursor()
-
-# function to search for a book in the database
+import database as db
 
 
-def search_book(book_title):
-    res = cursor.execute(
-        "SELECT * FROM Books WHERE LOWER(Title) = ?", (book_title,))
-    for row in res:
-        return row
+def book_search(book):
+    '''Takes either a book ID or a book title and returns a list of books that match the search'''
+    if (book.isdigit()):
+        if (db.book_exists(book)):
+            return db.book_info(book)
+        else:
+            return False
+    else:
+        return db.search_book(book)

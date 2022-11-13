@@ -1,6 +1,5 @@
 import tkinter as tk
 import tkinter.font as tkFont
-import tkinter.messagebox
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -44,11 +43,11 @@ class App:
         self.search_entry["justify"] = "center"
         self.search_entry.place(x=330, y=100, width=116, height=30)
 
-        self.search_results = tk.Message(root)
+        self.search_results = tk.Label(root)
         self.search_results["font"] = label_font
         self.search_results["fg"] = "#333333"
         self.search_results["justify"] = "center"
-        self.search_results.place(x=330, y=140, width=160, height=90)
+        self.search_results.place(x=220, y=140, width=350, height=100)
 
         search_button = tk.Button(root)
         search_button["bg"] = "#f0f0f0"
@@ -160,16 +159,19 @@ class App:
         recommendations["command"] = self.recommendations_button_command
 
     def search_button_command(self):
+        '''Searches for books based on the search term and displays the results'''
         book = self.search_entry.get().strip().lower()
-        book_info = bs.search_book(book)
-        if book_info is None:
+        book_info = bs.book_search(book)
+        if book_info == [] or book_info == False:
             self.search_results["text"] = "Book not found"
         else:
-            self.search_results["text"] = "Book ID: " + str(book_info[0]) + "\nTitle: " + \
-                book_info[2] + "\nGenre: " + \
-                book_info[1] + "\nAuthor: " + book_info[3]
+            data = str(book_info[0]).strip("()").split(',')
+            self.search_results["text"] = "Book ID: " + str(data[0]) + "\nTitle: " + \
+                data[2] + "\nGenre: " + \
+                data[1] + "\nAuthor: " + data[3]
 
     def checkout_button_command(self):
+        '''Checks out a book for a member with an option to reserve if unavailable and not already reserved'''
         member_id = self.memberID_entry.get()
         book_id = self.book_entry.get()
         result = bc.book_checkout(book_id, member_id)
@@ -190,6 +192,7 @@ class App:
                     tk.messagebox.showinfo("Error", "Book already reserved")
 
     def return_button_command(self):
+        '''Returns a book using the book ID if book has been loaned'''
         book_id = self.return_entry.get()
         result = br.return_book(book_id)
         if result == True:
@@ -200,6 +203,7 @@ class App:
             tk.messagebox.showinfo("Error", result)
 
     def recommendations_button_command(self):
+        '''Opens a new window with the graphs to show the most popular books and genres'''
         new_window = tk.Toplevel(root)
         new_window.title("Recommendations")
         width = 900
@@ -210,8 +214,7 @@ class App:
                                     (screenwidth - width) / 2, (screenheight - height) / 2)
         new_window.geometry(alignstr)
 
-        # add genre graph
-        fig = plt.figure(figsize=(6, 4))
+        fig = plt.figure(figsize=(4, 4))
         ax = fig.add_subplot(111)
         books = bsl.select_books(10)
         titles = []
@@ -224,11 +227,33 @@ class App:
             reservations.append(book[1])
         plt.xlabel("Book ID")
         plt.ylabel("Reservations")
+        plt.title("Top 10 Most Loaned Books")
         ax.bar(titles, reservations)
+
+        fig2 = plt.figure(figsize=(4, 4))
+        ax = fig2.add_subplot(111)
+        books = bsl.select_books(10)
+        titles = []
+        reservations = []
+
+        genres = bsl.select_genres()
+        labels = []
+        frequency = []
+        for genre in genres:
+            labels.append(genre[0])
+            frequency.append(genre[1])
+
+        fig2, ax2 = plt.subplots()
+        plt.title("Genre Frequency of Loans")
+        ax2.pie(frequency, labels=labels, autopct='%1.1f%%')
+        ax2.axis('equal')
 
         canvas = FigureCanvasTkAgg(fig, master=new_window)
         canvas.draw()
-        canvas.get_tk_widget().grid(column=2, row=0)
+        canvas.get_tk_widget().place(x=20, y=20, width=400, height=400)
+        canvas = FigureCanvasTkAgg(fig2, master=new_window)
+        canvas.draw()
+        canvas.get_tk_widget().place(x=440, y=20, width=420, height=400)
         new_window.mainloop()
 
         return

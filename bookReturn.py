@@ -2,8 +2,9 @@ import database as db
 
 
 def return_book(book_id):
+    '''Checks if the book is reserved and if it is, returns the book'''
     available = db.book_availability(book_id)
-    valid_ID = db.check_bookID(book_id)
+    valid_ID = db.book_exists(book_id)
     if not valid_ID:
         return 'Invalid book ID'
     elif available:
